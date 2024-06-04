@@ -58,7 +58,7 @@ def create_loan(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def getall_loan(request):
     """
     Obtener todos los préstamos.
@@ -74,7 +74,7 @@ def getall_loan(request):
     return Response(serializer.data)
     
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_loans_by_customer(request, external_id):
     """
     Obtener los préstamos de un cliente.

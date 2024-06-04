@@ -93,7 +93,7 @@ def create_payment(request):
 
 
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 def get_payments_by_customer(request, external_id):
     """
     Obtener los pagos de un cliente.
