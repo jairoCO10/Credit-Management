@@ -59,17 +59,16 @@ def create_customer(request: Request):
     except Exception as e:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def get_customer_balance(request, customer_external_id):
+def get_customer_balance(request, external_id):
     """
     Obtener los préstamos de un cliente.
 
     ---
 
     Parameters:
-    - customer_external_id:
+    - external_id:
         Description: ID externo del cliente.
         Required: true
         Type: string
@@ -81,12 +80,18 @@ def get_customer_balance(request, customer_external_id):
         Description: Préstamos no encontrados para este cliente.
     """
     try:
-        customer = Customers.objects.get(external_id=customer_external_id)
+        # Obtener el cliente por su ID externo
+        customer = Customers.objects.get(external_id=external_id)
+        
+        # Obtener todos los préstamos asociados al cliente
         loans = Loan.objects.filter(customer_id=customer)
+        
+        # Serializar los préstamos
+        loans_serializer = LoanSerializer(loans, many=True)
+        
+        return Response(loans_serializer.data)
+    
     except Customers.DoesNotExist:
         return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
     except Loan.DoesNotExist:
         return Response({"error": "Loans not found for this customer"}, status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = LoanSerializer(loans, many=True)
-    return Response(serializer.data)
